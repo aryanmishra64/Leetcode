@@ -46,7 +46,7 @@ public:
                 dfs(i,0,vis,grid);
             }
             if(!vis[i][m-1] && grid[i][m-1]==1){
-                dfs(i,n-1,vis,grid);
+                dfs(i,m-1,vis,grid);
             }
         }
 
