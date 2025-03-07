@@ -1,14 +1,21 @@
 class Solution {
 public:
     vector<int> constructTransformedArray(vector<int>& nums) {
-        const int n = nums.size();
-        vector<int> r(n);
-        for (int i = 0; i < n; ++i) {
-            int j = i, v = nums[i];
-            for (; v > 0; --v, j = (j + 1) % n);
-            for (; v < 0; ++v, j = (j + n - 1) % n);
-            r[i] = nums[j];
+        int n = nums.size();
+        vector<int> res(n, 0);
+        for (int i = 0; i < n; i++) {
+            if (nums[i] > 0) {
+                int k = (i + nums[i]) % n;
+                res[i] = nums[k];
+            } 
+            else if (nums[i] < 0) {
+                int k = (i + nums[i] % n + n) % n;
+                res[i] = nums[k];
+            } 
+            else {
+                res[i] = nums[i];
+            }
         }
-        return r;
+        return res;
     }
 };
