@@ -1,22 +1,29 @@
 class Solution {
 public:
     int countDays(int days, vector<vector<int>>& meetings) {
-        sort(meetings.begin(), meetings.end());
+        if (meetings.empty()) return days; // If no meetings, all days are free.
 
-        vector<vector<int>> mergedMeetings;
-        for (const auto& meeting : meetings) {
-            if (mergedMeetings.empty() || meeting[0] > mergedMeetings.back()[1]) {
-                mergedMeetings.push_back(meeting);
-            } else {
-                mergedMeetings.back()[1] = max(mergedMeetings.back()[1], meeting[1]);
+        sort(meetings.begin(), meetings.end()); // Step 1: Sort meetings by start time
+        
+        int ans = 0, last_end = 0;
+
+        for (auto& m : meetings) {
+            int start = m[0], end = m[1];
+
+            // Count free days before this meeting starts
+            if (start > last_end + 1) {
+                ans += (start - last_end - 1);
             }
+
+            // Update the last end day
+            last_end = max(last_end, end);
         }
 
-        int meetingDaysCount = 0;
-        for (const auto& m : mergedMeetings) {
-            meetingDaysCount += (m[1] - m[0] + 1);
+        // Count free days after the last meeting
+        if (last_end < days) {
+            ans += (days - last_end);
         }
 
-        return days - meetingDaysCount;
+        return ans;
     }
 };
