@@ -11,21 +11,42 @@
  */
 class Solution {
 public:
-    pair<int, TreeNode*> helper(TreeNode* node) {
-        if (!node) return {0, nullptr};
+    unordered_map<int,int>mp;
+    int maxD=0;
+    TreeNode* LCA(TreeNode* root){
 
-        auto left = helper(node->left);
-        auto right = helper(node->right);
+        if(root==NULL || mp[root->val]==maxD){
+            return root;
 
-        if (left.first == right.first)
-            return {left.first + 1, node};
-        else if (left.first > right.first)
-            return {left.first + 1, left.second};
-        else
-            return {right.first + 1, right.second};
+        }
+        TreeNode* left=LCA(root->left);
+        TreeNode* right=LCA(root->right);
+
+        if(left!=NULL && right!=NULL){
+            return root;
+        }
+        if(left!=NULL){
+            return left;
+        }
+        else {
+            return right;
+        }
+    }
+
+    void depth(TreeNode* root,int d){
+        if(root==NULL){
+            return;
+        }
+        maxD=max(maxD,d);
+        mp[root->val]=d;
+        depth(root->left,d+1);
+        depth(root->right,d+1);
+
+       
     }
 
     TreeNode* lcaDeepestLeaves(TreeNode* root) {
-        return helper(root).second;
+      depth(root,0);
+       return LCA(root);
     }
 };
