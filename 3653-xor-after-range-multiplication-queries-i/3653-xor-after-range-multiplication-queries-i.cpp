@@ -11,7 +11,7 @@ public:
             int val=it[3];
 
             while(idx<=right){
-                nums[idx] =(int) ((nums[idx] * val) % maxi);
+                nums[idx] = (1LL*nums[idx] * val) % maxi;
                 idx+=k;
             }
         }
