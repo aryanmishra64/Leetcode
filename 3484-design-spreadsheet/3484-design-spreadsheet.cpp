@@ -1,53 +1,62 @@
-#include <vector>
-#include <string>
-#include <cctype>
-
-using namespace std;
-
 class Spreadsheet {
-private:
-    vector<vector<int>> mat;
-    int numRows;
-    
-    bool isCellReference(const string& str) {
-        return isalpha(str[0]) && isdigit(str[1]);
-    }
-    
-    int getCellValue(const string& cell) {
-        char colChar = cell[0];
-        int col = colChar - 'A';
-        int row = stoi(cell.substr(1)) - 1;
-        return mat[row][col];
-    }
-    
 public:
-    Spreadsheet(int rows) : numRows(rows), mat(rows, vector<int>(26, 0)) {}
+    vector<vector<int>>sheet;
+    Spreadsheet(int rows) {
+        sheet = vector<vector<int>>(rows, vector<int>(26, 0));
+
+    }
     
-    void setCell(string cell, int value) {
-        char colChar = cell[0];
-        int col = colChar - 'A';
+      void setCell(string cell, int value) {
+        int col = cell[0] - 'A';
         int row = stoi(cell.substr(1)) - 1;
-        mat[row][col] = value;
+
+        sheet[row][col] = value;
+
     }
     
     void resetCell(string cell) {
-        char colChar = cell[0];
-        int col = colChar - 'A';
+        int col = cell[0] - 'A';
         int row = stoi(cell.substr(1)) - 1;
-        mat[row][col] = 0;
+        sheet[row][col] = 0;
     }
     
     int getValue(string formula) {
-        formula = formula.substr(1); // Remove '='
-        size_t plusPos = formula.find('+');
-        string left = formula.substr(0, plusPos);
-        string right = formula.substr(plusPos + 1);
-        
-        int leftValue = isCellReference(left) ? getCellValue(left) : stoi(left);
-        int rightValue = isCellReference(right) ? getCellValue(right) : stoi(right);
-        
-        return leftValue + rightValue;
+    int n = formula.length();
+    int ind = -1;
+
+    for (int i = 0; i < n; i++) {
+        if (formula[i] == '+') {
+            ind = i;
+            break;
+        }
     }
+
+    string left = formula.substr(1, ind - 1);  // exclude '=' and '+'
+    string right = formula.substr(ind + 1);
+
+    int leftval = 0, rightval = 0;
+
+    // left operand
+    if (isdigit(left[0])) {
+        leftval = stoi(left);
+    } else {
+        int col = left[0] - 'A';
+        int row = stoi(left.substr(1)) - 1;
+        leftval = sheet[row][col];
+    }
+
+    // right operand
+    if (isdigit(right[0])) {
+        rightval = stoi(right);
+    } else {
+        int col = right[0] - 'A';
+        int row = stoi(right.substr(1)) - 1;
+        rightval = sheet[row][col];
+    }
+
+    return leftval + rightval;
+}
+
 };
 
 /**
